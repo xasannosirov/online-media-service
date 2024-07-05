@@ -1,5 +1,5 @@
 app:
-  name: 'go-clean-template'
+  name: 'online-media-service'
   version: '1.0.0'
 
 http:
@@ -7,11 +7,8 @@ http:
 
 logger:
   log_level: 'debug'
-  rollbar_env: 'go-clean-template'
+  rollbar_env: 'online-media-service'
 
 postgres:
   pool_max: 2
-
-rabbitmq:
-  rpc_server_exchange: 'rpc_server'
-  rpc_client_exchange: 'rpc_client'
+  pg_url: 'postgres://postgres:root@localhost:5432/media_db'
