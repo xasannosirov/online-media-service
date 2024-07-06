@@ -13,7 +13,6 @@ import (
 	v1 "github.com/xasannosirov/online-media-service/internal/controller/http/v1"
 	"github.com/xasannosirov/online-media-service/internal/usecase"
 	"github.com/xasannosirov/online-media-service/internal/usecase/repo"
-	"github.com/xasannosirov/online-media-service/internal/usecase/webapi"
 	"github.com/xasannosirov/online-media-service/pkg/httpserver"
 	"github.com/xasannosirov/online-media-service/pkg/logger"
 	"github.com/xasannosirov/online-media-service/pkg/postgres"
@@ -31,14 +30,13 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	// Use case
-	translationUseCase := usecase.New(
+	fileUseCase := usecase.New(
 		repo.New(pg),
-		webapi.New(),
 	)
 
 	// HTTP Server
 	handler := gin.New()
-	v1.NewRouter(handler, l, translationUseCase)
+	v1.NewRouter(handler, l, fileUseCase)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	// Waiting signal

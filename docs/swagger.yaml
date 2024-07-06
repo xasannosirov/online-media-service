@@ -1,42 +1,24 @@
 basePath: /v1
 definitions:
-  entity.Translation:
+  entity.File:
     properties:
-      destination:
-        example: en
+      file_key:
+        example: 0b4a4e6e-e502-454f-a8a0-fb7d445e5efa
         type: string
-      original:
-        example: текст для перевода
+      file_name:
+        example: template.png
         type: string
-      source:
-        example: auto
-        type: string
-      translation:
-        example: text for translation
+      file_url:
+        example: https://example.com/images/template.png
         type: string
     type: object
-  v1.doTranslateRequest:
+  v1.removeResponse:
     properties:
-      destination:
-        example: en
-        type: string
-      original:
-        example: текст для перевода
-        type: string
-      source:
-        example: auto
+      message:
+        example: success
         type: string
     required:
-      - destination
-      - original
-      - source
-    type: object
-  v1.historyResponse:
-    properties:
-      history:
-        items:
-          $ref: '#/definitions/entity.Translation'
-        type: array
+    - message
     type: object
   v1.response:
     properties:
@@ -47,30 +29,29 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: Using a translation service as an example
-  title: Go Clean Template API
+  description: Using a file service as an example
+  title: Go Media Service API
   version: "1.0"
 paths:
-  /translation/do-translate:
-    post:
+  /file/remove/{url}:
+    delete:
       consumes:
-        - application/json
-      description: Translate a text
-      operationId: do-translate
+      - application/json
+      description: Remove a file
+      operationId: url
       parameters:
-        - description: Set up translation
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: '#/definitions/v1.doTranslateRequest'
+      - description: File URL
+        in: path
+        name: url
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.Translation'
+            $ref: '#/definitions/v1.removeResponse'
         "400":
           description: Bad Request
           schema:
@@ -79,27 +60,32 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/v1.response'
-      summary: Translate
+      summary: Remove
       tags:
-        - translation
-  /translation/history:
-    get:
+      - file
+  /file/store:
+    post:
       consumes:
-        - application/json
-      description: Show all translation history
-      operationId: history
+      - multipart/form-data
+      description: Save file
+      parameters:
+      - description: Send file
+        in: formData
+        name: request
+        required: true
+        type: file
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/v1.historyResponse'
+            $ref: '#/definitions/entity.File'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/v1.response'
-      summary: Show history
+      summary: Store
       tags:
-        - translation
+      - file
 swagger: "2.0"

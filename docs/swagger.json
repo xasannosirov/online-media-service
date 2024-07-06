@@ -1,17 +1,17 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Using a translation service as an example",
-        "title": "Go Clean Template API",
+        "description": "Using a file service as an example",
+        "title": "Go Media Service API",
         "contact": {},
         "version": "1.0"
     },
     "host": "localhost:8080",
     "basePath": "/v1",
     "paths": {
-        "/translation/do-translate": {
-            "post": {
-                "description": "Translate a text",
+        "/file/remove/{url}": {
+            "delete": {
+                "description": "Remove a file",
                 "consumes": [
                     "application/json"
                 ],
@@ -19,26 +19,24 @@
                     "application/json"
                 ],
                 "tags": [
-                    "translation"
+                    "file"
                 ],
-                "summary": "Translate",
-                "operationId": "do-translate",
+                "summary": "Remove",
+                "operationId": "url",
                 "parameters": [
                     {
-                        "description": "Set up translation",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.doTranslateRequest"
-                        }
+                        "type": "string",
+                        "description": "File URL",
+                        "name": "url",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Translation"
+                            "$ref": "#/definitions/v1.removeResponse"
                         }
                     },
                     "400": {
@@ -56,25 +54,33 @@
                 }
             }
         },
-        "/translation/history": {
-            "get": {
-                "description": "Show all translation history",
+        "/file/store": {
+            "post": {
+                "description": "Save file",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "translation"
+                    "file"
                 ],
-                "summary": "Show history",
-                "operationId": "history",
+                "summary": "Store",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Send file",
+                        "name": "request",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/v1.historyResponse"
+                            "$ref": "#/definitions/entity.File"
                         }
                     },
                     "500": {
@@ -88,57 +94,32 @@
         }
     },
     "definitions": {
-        "entity.Translation": {
+        "entity.File": {
             "type": "object",
             "properties": {
-                "destination": {
+                "file_key": {
                     "type": "string",
-                    "example": "en"
+                    "example": "0b4a4e6e-e502-454f-a8a0-fb7d445e5efa"
                 },
-                "original": {
+                "file_name": {
                     "type": "string",
-                    "example": "текст для перевода"
+                    "example": "template.png"
                 },
-                "source": {
+                "file_url": {
                     "type": "string",
-                    "example": "auto"
-                },
-                "translation": {
-                    "type": "string",
-                    "example": "text for translation"
+                    "example": "https://example.com/images/template.png"
                 }
             }
         },
-        "v1.doTranslateRequest": {
+        "v1.removeResponse": {
             "type": "object",
             "required": [
-                "destination",
-                "original",
-                "source"
+                "message"
             ],
             "properties": {
-                "destination": {
+                "message": {
                     "type": "string",
-                    "example": "en"
-                },
-                "original": {
-                    "type": "string",
-                    "example": "текст для перевода"
-                },
-                "source": {
-                    "type": "string",
-                    "example": "auto"
-                }
-            }
-        },
-        "v1.historyResponse": {
-            "type": "object",
-            "properties": {
-                "history": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Translation"
-                    }
+                    "example": "success"
                 }
             }
         },

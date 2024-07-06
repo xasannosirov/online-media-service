@@ -7,23 +7,14 @@ import (
 	"github.com/xasannosirov/online-media-service/internal/entity"
 )
 
-//go:generate mockgen -source=interfaces.go -destination=./mocks_test.go -package=usecase_test
-
 type (
-	// Translation -.
-	Translation interface {
-		Translate(context.Context, entity.Translation) (entity.Translation, error)
-		History(context.Context) ([]entity.Translation, error)
+	File interface {
+		Store(ctx context.Context, file entity.File) (entity.File, error)
+		Remove(ctx context.Context, url string) error
 	}
 
-	// TranslationRepo -.
-	TranslationRepo interface {
-		Store(context.Context, entity.Translation) error
-		GetHistory(context.Context) ([]entity.Translation, error)
-	}
-
-	// TranslationWebAPI -.
-	TranslationWebAPI interface {
-		Translate(entity.Translation) (entity.Translation, error)
+	FileRepo interface {
+		Store(ctx context.Context, file entity.File) (entity.File, error)
+		Remove(ctx context.Context, url string) error
 	}
 )
